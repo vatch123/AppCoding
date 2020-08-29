@@ -12,6 +12,8 @@ from channel_erasure import bernouli_erasure, gilbert_elliot_erasure
 length = 8   # 8 bit message
 number = 10000  # No. of messages
 size = 4 # No. of messages in a packet
+delay_tolerance = 16 # No. of previous packets of interest at the current moment
+feedback_interval = 20 # Feedback sent after every 20 packets
 
 # Placeholder for all packets
 messages = [np.zeros((length, 1))] * number
@@ -32,10 +34,19 @@ for i in range(number):
     previous_status = gateway.received_packet_list[i-1] if i>=0 else False
     lost = gilbert_elliot_erasure( previous_status, 0.5, 0.4)
 
+    # Receiver's side
     gateway.update_packet_reception(i, lost)
 
     if not lost:
         gateway.receive_packet(p_i, i, size)
+    
+    if i % feedback_interval==0:
+        feedback = gateway.send_feedback(i, delay_tolerance)
+        
+        if feedback:
+            lost = bernouli_erasure(0.4)
+            if not lost:
+                transmitter.store_feedback(feedback)
     
 
 # Analysis

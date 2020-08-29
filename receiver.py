@@ -2,6 +2,8 @@
 BTP Project - App Coding
 """
 
+from utils import get_bin
+
 class Receiver():
 
     def __init__(self, num_messages):
@@ -24,6 +26,21 @@ class Receiver():
     def decode(self):
         pass
 
-    def send_feedback(self):
-        pass
+
+    def send_feedback(self, packet_number, delay_tolerance):
+        # Interval of interest starting position
+        lower = max(0, packet_number - delay_tolerance)
+        
+        try:
+            index = self.received_messages_list.index(False, lower, packet_number + 1)
+            num_unreceived = (delay_tolerance + 1) - sum(self.received_messages_list[lower:packet_number+1]) 
+        except ValueError as _:
+            index = None
+        
+        if index:
+            feedback = str(int(self.received_messages_list[packet_number])) + get_bin(index, 8) + get_bin(num_unreceived, 8)
+            return feedback
+        else:
+            return False
+
 
