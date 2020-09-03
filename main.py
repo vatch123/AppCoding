@@ -3,9 +3,9 @@ BTP project - Application Layer Coding
 """
 
 # Import necessary modules
-import numpy as np
 import sender
 import receiver
+import random
 from channel_erasure import bernouli_erasure, gilbert_elliot_erasure
 
 # Creating a set of messages
@@ -16,10 +16,10 @@ delay_tolerance = 16 # No. of previous packets of interest at the current moment
 feedback_interval = 20 # Feedback sent after every 20 packets
 
 # Placeholder for all packets
-messages = [np.zeros((length, 1))] * number
+messages = [[random.randint(0,1) for _ in range(length)]] * number
 
 # Create a sender
-transmitter = sender.Sender(messages)
+transmitter = sender.Sender(messages, delay_tolerance)
 
 # Creating a receiver
 gateway = receiver.Receiver(number)
@@ -27,7 +27,7 @@ gateway = receiver.Receiver(number)
 # Transmission
 for i in range(number):
     # Senders' side
-    p_i = transmitter.send_packet(i, size)
+    p_i_h, p_i = transmitter.send_packet(i, size)
     
     # Channel erasure
     # lost = bernouli_erasure(0.4)
@@ -38,7 +38,7 @@ for i in range(number):
     gateway.update_packet_reception(i, lost)
 
     if not lost:
-        gateway.receive_packet(p_i, i, size)
+        gateway.receive_packet(p_i_h, p_i, size)
     
     if i % feedback_interval==0:
         feedback = gateway.send_feedback(i, delay_tolerance)
@@ -46,9 +46,9 @@ for i in range(number):
         if feedback:
             lost = bernouli_erasure(0.4)
             if not lost:
-                transmitter.store_feedback(feedback)
+                transmitter.store_feedback(i, feedback)
     
 
 # Analysis
-reception_rate = np.sum(gateway.received_messages_list) /  number
+reception_rate = sum(gateway.received_messages_list) /  number
 print(reception_rate)

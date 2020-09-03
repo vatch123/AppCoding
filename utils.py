@@ -17,3 +17,18 @@ def get_bin(x, n=0):
 
     return format(x, 'b').zfill(n)
 
+def list2int(x):
+    """
+    Converts a binary list to number
+    """
+
+    return int("".join(str(i) for i in x), 2)
+
+
+def int2list(x, n=0):
+    """
+    Convert a number to binary list
+    """
+
+    x = get_bin(x,n)
+    return [int(s) for s in x]
