@@ -8,7 +8,7 @@ import receiver
 import random
 from channel_erasure import bernouli_erasure, gilbert_elliot_erasure
 
-def main(
+def system(
     length = 8,
     number = 10000,
     size = 4,
@@ -70,6 +70,7 @@ def main(
     # Analysis
     reception_rate = sum(gateway.received_messages_list) /  number
     unreceived = number - sum(gateway.received_messages_list)
+    dfr = unreceived/number
 
     print("Channel Erasure: ", channel_erasure_model)
     print("Erasure probability: ", erasure_prob)
@@ -77,8 +78,10 @@ def main(
     print("Delay Tolerance: ", delay_tolerance)
     print("Reception Rate: ", reception_rate)
     print("Number of unreceived packets: ", unreceived)
-    print("Delivery Failure Rate: ", unreceived/number)
+    print("Delivery Failure Rate: ", dfr)
+
+    return dfr
 
 
 if __name__=="__main__":
-    main()
+    system()
