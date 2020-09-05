@@ -80,6 +80,8 @@ def system(
     print("Number of unreceived packets: ", unreceived)
     print("Delivery Failure Rate: ", dfr)
 
+    print("********")
+
     return dfr
 
 

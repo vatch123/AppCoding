@@ -22,6 +22,9 @@ def run_simulations():
             For Gilbert-Elliot: erasure_prob and erasure_prob2 = erasure_prob - 0.1
 
     """
+    print("###################################################")
+    print("Simulation 1: DFR vs Packet Delivery Probability")
+    print("###################################################")
     erasures = [i/50 for i in range(51)]
     packet_success = [1 - i/50 for i in range(51)]
     dfr = []
@@ -38,8 +41,17 @@ def run_simulations():
             erasure_prob_feedback = 0.4
         ))
 
+    fig = plt.figure()
+    fig.suptitle("DFR vs Packet Delivery Probability")
     plt.plot(packet_success, dfr)
+    plt.xlabel('Packet Delivery Probability')
+    plt.ylabel('Delivery Failure Rate')
+    plt.yscale('log')
+    plt.grid()
+    plt.tight_layout()
     plt.show()
+
+    print("###################################################")
 
 
 if __name__=='__main__':
