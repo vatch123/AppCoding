@@ -5,8 +5,9 @@ Simulation Code
 
 import matplotlib.pyplot as plt
 from system import system
+import sys
 
-def run_simulation():
+def run_simulations():
 
     """
     Simulation 1:
@@ -40,3 +41,8 @@ def run_simulation():
     plt.plot(packet_success, dfr)
     plt.show()
 
+
+if __name__=='__main__':
+    sys.stdout = open('./logs/simulation_results.txt', 'w')
+    run_simulations()
+    sys.stdout.close()
