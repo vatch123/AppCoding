@@ -6,14 +6,19 @@ def bernouli_erasure(erasure_prob):
     return True if x < erasure_prob else False
 
 
-def gilbert_elliot_erasure(previous_status, erasure_prob1, erasure_prob2):
+def gilbert_elliot_erasure(previous_status, Pbg, Pgb):
+    """
+    Previous state
+    Pbg: Probability of transition from bad to good.
+    Pgb: Probability of transition from good to bad
+    """
 
     # Check if packet_number-1 was lost
     if previous_status:
         x = np.random.uniform()
-        return True if x < erasure_prob1 else False
+        return True if x < 1 - Pbg else False
     
     else:
         x = np.random.uniform()
-        return True if x < erasure_prob2 else False
+        return True if x < Pgb else False
 

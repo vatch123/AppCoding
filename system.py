@@ -15,8 +15,8 @@ def system(
     delay_tolerance = 16,
     feedback_interval = 20,
     channel_erasure_model = 'Gilbert-Elliot',
-    erasure_prob = 0.5,
-    erasure_prob2 = 0.4,
+    Pbg = 0.5,
+    Pgb = 0.4,
     erasure_prob_feedback = 0.4,
     scheme = 'ICC'
 ):
@@ -48,10 +48,10 @@ def system(
         
         # Channel erasure
         if channel_erasure_model == 'Bernouli':
-            lost = bernouli_erasure(erasure_prob)
+            lost = bernouli_erasure(Pbg)
         elif channel_erasure_model == 'Gilbert-Elliot':
             previous_status = gateway.received_packet_list[i-1] if i>=0 else False
-            lost = gilbert_elliot_erasure( previous_status, erasure_prob, erasure_prob2)
+            lost = gilbert_elliot_erasure( previous_status, Pbg, Pgb)
 
         # Receiver's side
         gateway.update_packet_reception(i, lost)
@@ -76,7 +76,11 @@ def system(
     print("********")
 
     print("Channel Erasure: ", channel_erasure_model)
-    print("Erasure probability: ", erasure_prob)
+    if channel_erasure_model=='Gilbert-Elliot':
+        print("Probability bad to good: ", Pbg)
+        print('Probability good to bad: ', Pgb)
+    elif channel_erasure_model=='Bernouli':
+        print('Erasure Probability: ', Pbg)
     print("Number of messages: ", number)
     print("Delay Tolerance: ", delay_tolerance)
     print("Reception Rate: ", reception_rate)
