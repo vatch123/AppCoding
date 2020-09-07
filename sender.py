@@ -15,57 +15,68 @@ class Sender():
         self.sent_list = [False] * len(messages)
         self.delay_tolerance = delay_tolerance
     
-    def send_packet(self, packet_number, size):
+    def send_packet(self, packet_number, size, scheme='ICC'):
         """
         size: No. of 8 bit messages that can be in a packet
         """
+        if scheme == 'ICC':
+            packet = [self.messages_list[packet_number]]
+            packet_header = [packet_number]
 
-        packet = [self.messages_list[packet_number]]
-        packet_header = [packet_number]
-
-        if self.feedback_packet is packet_number - 1:
-            oldest_undelivered = int(self.feedback[1:9], 2)
-            num_missing = int(self.feedback[9:], 2)
-            if oldest_undelivered < packet_number:
-                packet.append(self.messages_list[oldest_undelivered])
-                packet_header.append(oldest_undelivered)
-                if num_missing > 1:
-                    if packet_number - oldest_undelivered <= size - 1:
-                        for i in range(oldest_undelivered + 1, oldest_undelivered + num_missing):
-                            packet.append(self.messages_list[i])
-                            packet_header.append(i)
-                    elif packet_number - oldest_undelivered > size - 1 and num_missing == packet_number - oldest_undelivered:
-                        for i in range(oldest_undelivered + 1, oldest_undelivered + size - 1):
-                            packet.append(self.messages_list[i])
-                            packet_header.append(i)
-                    elif packet_number - oldest_undelivered > size - 1 and 1 < num_missing < packet_number - oldest_undelivered:
-                        interest_list = self.messages_list[oldest_undelivered + 1:packet_number]
-                        for _ in range(size - 2):
-                            coded_message, coding_list = self.code(interest_list, packet_number, oldest_undelivered, num_missing)
-                            packet.append(coded_message)
-                            packet_header.append(coding_list)
-        else:
-
-            # TODO: Decide what to do first when no feedback is present
-            if self.feedback:
+            if self.feedback_packet is packet_number - 1:
                 oldest_undelivered = int(self.feedback[1:9], 2)
+                num_missing = int(self.feedback[9:], 2)
+                if oldest_undelivered < packet_number:
+                    packet.append(self.messages_list[oldest_undelivered])
+                    packet_header.append(oldest_undelivered)
+                    if num_missing > 1:
+                        if packet_number - oldest_undelivered <= size - 1:
+                            for i in range(oldest_undelivered + 1, oldest_undelivered + num_missing):
+                                packet.append(self.messages_list[i])
+                                packet_header.append(i)
+                        elif packet_number - oldest_undelivered > size - 1 and num_missing == packet_number - oldest_undelivered:
+                            for i in range(oldest_undelivered + 1, oldest_undelivered + size - 1):
+                                packet.append(self.messages_list[i])
+                                packet_header.append(i)
+                        elif packet_number - oldest_undelivered > size - 1 and 1 < num_missing < packet_number - oldest_undelivered:
+                            interest_list = self.messages_list[oldest_undelivered + 1:packet_number]
+                            for _ in range(size - 2):
+                                coded_message, coding_list = self.code(interest_list, packet_number, oldest_undelivered, num_missing)
+                                packet.append(coded_message)
+                                packet_header.append(coding_list)
             else:
-                oldest_undelivered = 0
-            z = min(packet_number - oldest_undelivered, self.delay_tolerance)
 
-            # TODO: Check for reversal here
-            interest_list = self.messages_list[packet_number - z:packet_number]
-            if z < size-1:
-                for pack in interest_list:
-                    packet.append(pack)
-            else:
-                for _ in range(size-1):
-                    coded_message, coding_list = self.code(interest_list=interest_list, oldest_undelivered=oldest_undelivered,
-                                                            packet_number=packet_number, distribution='uniform')
-                    packet.append(coded_message)
-                    packet_header.append(coding_list)
+                # TODO: Decide what to do first when no feedback is present
+                if self.feedback:
+                    oldest_undelivered = int(self.feedback[1:9], 2)
+                else:
+                    oldest_undelivered = 0
+                z = min(packet_number - oldest_undelivered, self.delay_tolerance)
+
+                # TODO: Check for reversal here
+                interest_list = self.messages_list[packet_number - z:packet_number]
+                if z < size-1:
+                    for pack in interest_list:
+                        packet.append(pack)
+                else:
+                    for _ in range(size-1):
+                        coded_message, coding_list = self.code(interest_list=interest_list, oldest_undelivered=oldest_undelivered,
+                                                                packet_number=packet_number, distribution='uniform')
+                        packet.append(coded_message)
+                        packet_header.append(coding_list)
+            
+            return (packet_header, packet)
         
-        return (packet_header, packet)
+        elif scheme=='repetition':
+            packet = []
+            packet_header = []
+            for i in range(size):
+                if(packet_number-i)>=0:
+                    packet.append(self.messages_list[packet_number - i])
+                    self.sent_list[packet_number - i] = True
+                    packet_header.append(packet_number-i)
+            
+            return(packet_header, packet)
 
 
     def code(self, interest_list=None, packet_number=None, oldest_undelivered=None, num_missing=None, distribution=None):

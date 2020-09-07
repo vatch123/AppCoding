@@ -17,7 +17,8 @@ def system(
     channel_erasure_model = 'Gilbert-Elliot',
     erasure_prob = 0.5,
     erasure_prob2 = 0.4,
-    erasure_prob_feedback = 0.4
+    erasure_prob_feedback = 0.4,
+    scheme = 'ICC'
 ):
     """
     length: 8 bit message
@@ -43,7 +44,7 @@ def system(
     # Transmission
     for i in range(number):
         # Senders' side
-        p_i_h, p_i = transmitter.send_packet(i, size)
+        p_i_h, p_i = transmitter.send_packet(i, size, scheme)
         
         # Channel erasure
         if channel_erasure_model == 'Bernouli':
@@ -71,6 +72,8 @@ def system(
     reception_rate = sum(gateway.received_messages_list) /  number
     unreceived = number - sum(gateway.received_messages_list)
     dfr = unreceived/number
+
+    print("********")
 
     print("Channel Erasure: ", channel_erasure_model)
     print("Erasure probability: ", erasure_prob)

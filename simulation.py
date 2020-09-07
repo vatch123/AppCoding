@@ -26,9 +26,9 @@ def run_simulations():
     print("###################################################")
     erasures = [i/50 for i in range(51)]
     packet_success = [1 - i/50 for i in range(51)]
-    dfr = []
+    dfr_icc = []
     for erasure_prob in erasures:
-        dfr.append(system(
+        dfr_icc.append(system(
             length = 8,
             number = 10000,
             size = 2,
@@ -37,17 +37,35 @@ def run_simulations():
             channel_erasure_model = 'Bernouli',
             erasure_prob = erasure_prob,
             erasure_prob2 = max(0, erasure_prob - 0.1),
-            erasure_prob_feedback = 0.75
+            erasure_prob_feedback = 0.75,
+            scheme='ICC'
+        ))
+    
+    dfr_rr = []
+    for erasure_prob in erasures:
+        dfr_rr.append(system(
+            length = 8,
+            number = 10000,
+            size = 2,
+            delay_tolerance = 16,
+            feedback_interval = 20,
+            channel_erasure_model = 'Bernouli',
+            erasure_prob = erasure_prob,
+            erasure_prob2 = max(0, erasure_prob - 0.1),
+            erasure_prob_feedback = 0.75,
+            scheme='repetition'
         ))
 
-    fig = plt.figure()
-    fig.suptitle("DFR vs Packet Delivery Probability (Bernouli) (Size of packets = 2, Feedback Erasure = 0.75)")
-    plt.plot(packet_success, dfr)
+    plt.figure()
+    plt.title("Size = 2, Feedback Erasure = 0.75", fontsize=12)
+    plt.plot(packet_success, dfr_icc, label='Windowed Coding')
+    plt.plot(packet_success, dfr_rr, label='Repetition Redundancy')
     plt.xlabel('Packet Delivery Probability')
     plt.ylabel('Delivery Failure Rate')
     plt.yscale('log')
     plt.grid()
     plt.tight_layout()
+    plt.legend(loc='upper right')
 
     print("###################################################")
 
@@ -69,9 +87,9 @@ def run_simulations():
     print("###################################################")
     erasures = [i/50 for i in range(51)]
     packet_success = [1 - i/50 for i in range(51)]
-    dfr = []
+    dfr_icc = []
     for erasure_prob in erasures:
-        dfr.append(system(
+        dfr_icc.append(system(
             length = 8,
             number = 10000,
             size = 3,
@@ -80,17 +98,35 @@ def run_simulations():
             channel_erasure_model = 'Bernouli',
             erasure_prob = erasure_prob,
             erasure_prob2 = max(0, erasure_prob - 0.1),
-            erasure_prob_feedback = 0.25
+            erasure_prob_feedback = 0.25,
+            scheme='ICC'
         ))
 
-    fig1 = plt.figure()
-    fig1.suptitle("DFR vs Packet Delivery Probability (Bernouli) (Size of packets = 3, Feedback Erasure = 0.25)")
-    plt.plot(packet_success, dfr)
+    dfr_rr = []
+    for erasure_prob in erasures:
+        dfr_rr.append(system(
+            length = 8,
+            number = 10000,
+            size = 3,
+            delay_tolerance = 16,
+            feedback_interval = 20,
+            channel_erasure_model = 'Bernouli',
+            erasure_prob = erasure_prob,
+            erasure_prob2 = max(0, erasure_prob - 0.1),
+            erasure_prob_feedback = 0.25,
+            scheme='repetition'
+        ))
+
+    plt.figure()
+    plt.title("Size = 3, Feedback Erasure = 0.25", fontsize=12)
+    plt.plot(packet_success, dfr_icc, label='Windowed Coding')
+    plt.plot(packet_success, dfr_rr, label='Repetition Redundancy')
     plt.xlabel('Packet Delivery Probability')
     plt.ylabel('Delivery Failure Rate')
     plt.yscale('log')
     plt.grid()
     plt.tight_layout()
+    plt.legend(loc='upper right')
 
     print("###################################################")
 
