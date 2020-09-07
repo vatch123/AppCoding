@@ -16,9 +16,9 @@ def gilbert_elliot_erasure(previous_status, Pbg, Pgb):
     # Check if packet_number-1 was lost
     if previous_status:
         x = np.random.uniform()
-        return True if x < 1 - Pbg else False
+        return True if x < Pbg else False
     
     else:
         x = np.random.uniform()
-        return True if x < Pgb else False
+        return True if x < 1 - Pgb else False
 
