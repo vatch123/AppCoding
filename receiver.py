@@ -52,11 +52,11 @@ class Receiver():
 
     def send_feedback(self, packet_number, delay_tolerance):
         # Interval of interest starting position
-        lower = max(0, packet_number - delay_tolerance)
+        lower = max(0, packet_number - delay_tolerance + 1)
         
         try:
-            index = self.received_messages_list.index(False, lower, packet_number + 1)
-            num_unreceived = (delay_tolerance + 1) - sum(self.received_messages_list[lower:packet_number+1]) 
+            index = packet_number - self.received_messages_list.index(False, lower, packet_number + 1)
+            num_unreceived = (delay_tolerance - 1) - sum(self.received_messages_list[lower:packet_number]) 
         except ValueError as _:
             index = None
         

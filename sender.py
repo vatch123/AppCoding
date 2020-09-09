@@ -24,7 +24,7 @@ class Sender():
             packet_header = [packet_number]
 
             if self.feedback_packet is packet_number - 1:
-                oldest_undelivered = int(self.feedback[1:9], 2)
+                oldest_undelivered = self.feedback_packet - int(self.feedback[1:9], 2)
                 num_missing = int(self.feedback[9:], 2)
                 if oldest_undelivered < packet_number:
                     packet.append(self.messages_list[oldest_undelivered])
@@ -48,7 +48,7 @@ class Sender():
 
                 # TODO: Decide what to do first when no feedback is present
                 if self.feedback:
-                    oldest_undelivered = int(self.feedback[1:9], 2)
+                    oldest_undelivered = self.feedback_packet - int(self.feedback[1:9], 2)
                 else:
                     oldest_undelivered = 0
                 z = min(packet_number - oldest_undelivered, self.delay_tolerance)
@@ -56,16 +56,16 @@ class Sender():
                 # TODO: Check for reversal here
                 interest_list = self.messages_list[packet_number - z:packet_number]
                 if z < size-1:
-                    for pack in interest_list:
+                    for i, pack in enumerate(interest_list):
                         packet.append(pack)
+                        packet_header.append(i + packet_number - z)
+                        
                 else:
                     for _ in range(size-1):
                         coded_message, coding_list = self.code(interest_list=interest_list, oldest_undelivered=oldest_undelivered,
                                                                 packet_number=packet_number, distribution='uniform')
                         packet.append(coded_message)
                         packet_header.append(coding_list)
-            
-            return (packet_header, packet)
         
         elif scheme=='repetition':
             packet = []
@@ -76,7 +76,7 @@ class Sender():
                     self.sent_list[packet_number - i] = True
                     packet_header.append(packet_number-i)
             
-            return(packet_header, packet)
+        return(packet_header, packet)
 
 
     def code(self, interest_list=None, packet_number=None, oldest_undelivered=None, num_missing=None, distribution=None):

@@ -60,6 +60,7 @@ def system(
             gateway.receive_packet(p_i_h, p_i, size)
         
         if i % feedback_interval==0:
+            # TODO: If none of the last packets are missing what to do
             feedback = gateway.send_feedback(i, delay_tolerance)
             
             if feedback:
@@ -93,4 +94,4 @@ def system(
 
 
 if __name__=="__main__":
-    system()
+    system(channel_erasure_model='Bernouli')
