@@ -8,9 +8,14 @@ from system import system
 import sys
 import argparse
 
-num = 4 # Number of simulations currently in the system
+num = 5 # Number of simulations currently in the system
 
 def run_simulations(simulation='all'):
+
+    length = 8
+    number = 10000
+    delay_tolerance = 16
+    feedback_interval = 1
 
     if simulation == 'all':
         for i in range(1, num+1):
@@ -37,14 +42,13 @@ def run_simulations(simulation='all'):
         dfr_icc = []
         for erasure_prob in erasures:
             dfr_icc.append(system(
-                length = 8,
-                number = 10000,
+                length = length,
+                number = number,
                 size = 2,
-                delay_tolerance = 16,
-                feedback_interval = 20,
+                delay_tolerance = delay_tolerance,
+                feedback_interval = feedback_interval,
                 channel_erasure_model = 'Bernouli',
                 Pbg = erasure_prob,
-                Pgb = max(0, erasure_prob - 0.1),
                 erasure_prob_feedback = 0.75,
                 scheme='ICC'
             ))
@@ -52,20 +56,19 @@ def run_simulations(simulation='all'):
         dfr_rr = []
         for erasure_prob in erasures:
             dfr_rr.append(system(
-                length = 8,
-                number = 10000,
+                length = length,
+                number = number,
                 size = 2,
-                delay_tolerance = 16,
-                feedback_interval = 20,
+                delay_tolerance = delay_tolerance,
+                feedback_interval = feedback_interval,
                 channel_erasure_model = 'Bernouli',
                 Pbg = erasure_prob,
-                Pgb = max(0, erasure_prob - 0.1),
                 erasure_prob_feedback = 0.75,
                 scheme='repetition'
             ))
 
         plt.figure()
-        plt.title("Size = 2, Feedback Erasure = 0.75", fontsize=12)
+        plt.title("Simulation 1: DFR vs Packet Delivery Probability (Bernouli) (Size = 2, Feedback Erasure = 0.75)", fontsize=12)
         plt.plot(packet_success, dfr_icc, label='Windowed Coding')
         plt.plot(packet_success, dfr_rr, label='Repetition Redundancy')
         plt.xlabel('Packet Delivery Probability')
@@ -98,14 +101,13 @@ def run_simulations(simulation='all'):
         dfr_icc = []
         for erasure_prob in erasures:
             dfr_icc.append(system(
-                length = 8,
-                number = 10000,
+                length = length,
+                number = number,
                 size = 3,
-                delay_tolerance = 16,
-                feedback_interval = 20,
+                delay_tolerance = delay_tolerance,
+                feedback_interval = feedback_interval,
                 channel_erasure_model = 'Bernouli',
                 Pbg = erasure_prob,
-                Pgb = max(0, erasure_prob - 0.1),
                 erasure_prob_feedback = 0.25,
                 scheme='ICC'
             ))
@@ -113,20 +115,19 @@ def run_simulations(simulation='all'):
         dfr_rr = []
         for erasure_prob in erasures:
             dfr_rr.append(system(
-                length = 8,
-                number = 10000,
+                length = length,
+                number = number,
                 size = 3,
-                delay_tolerance = 16,
-                feedback_interval = 20,
+                delay_tolerance = delay_tolerance,
+                feedback_interval = feedback_interval,
                 channel_erasure_model = 'Bernouli',
                 Pbg = erasure_prob,
-                Pgb = max(0, erasure_prob - 0.1),
                 erasure_prob_feedback = 0.25,
                 scheme='repetition'
             ))
 
         plt.figure()
-        plt.title("Size = 3, Feedback Erasure = 0.25", fontsize=12)
+        plt.title("Simulation 2: DFR vs Packet Delivery Probability (Bernouli) (Size = 3, Feedback Erasure = 0.25)", fontsize=12)
         plt.plot(packet_success, dfr_icc, label='Windowed Coding')
         plt.plot(packet_success, dfr_rr, label='Repetition Redundancy')
         plt.xlabel('Packet Delivery Probability')
@@ -165,14 +166,13 @@ def run_simulations(simulation='all'):
         dfr_icc = []
         for erasure_prob in feedback_erasure:
             dfr_icc.append(system(
-                length = 8,
-                number = 10000,
+                length = length,
+                number = number,
                 size = 4,
-                delay_tolerance = 16,
-                feedback_interval = 20,
+                delay_tolerance = delay_tolerance,
+                feedback_interval = feedback_interval,
                 channel_erasure_model = 'Bernouli',
                 Pbg = 0.4,
-                Pgb = max(0, erasure_prob - 0.1),
                 erasure_prob_feedback = erasure_prob,
                 scheme='ICC'
             ))
@@ -180,20 +180,19 @@ def run_simulations(simulation='all'):
         dfr_rr = []
         for erasure_prob in feedback_erasure:
             dfr_rr.append(system(
-                length = 8,
-                number = 10000,
+                length = length,
+                number = number,
                 size = 4,
-                delay_tolerance = 16,
-                feedback_interval = 20,
+                delay_tolerance = delay_tolerance,
+                feedback_interval = feedback_interval,
                 channel_erasure_model = 'Bernouli',
                 Pbg = 0.4,
-                Pgb = max(0, erasure_prob - 0.1),
                 erasure_prob_feedback = erasure_prob,
                 scheme='repetition'
             ))
 
         plt.figure()
-        plt.title("Size = 4, Packet Success = 0.4", fontsize=12)
+        plt.title("Simulation 3: DFR vs Feedback Reception Probability (Bernouli) (Size = 4, Erasure = 0.4)", fontsize=12)
         plt.plot(feedback_success, dfr_icc, label='Windowed Coding')
         plt.plot(feedback_success, dfr_rr, label='Repetition Redundancy')
         plt.xlabel('Feedback Reception Probability')
@@ -224,11 +223,11 @@ def run_simulations(simulation='all'):
         dfr_icc = []
         for erasure_prob in erasures:
             dfr_icc.append(system(
-                length = 8,
-                number = 10000,
+                length = length,
+                number = number,
                 size = 3,
-                delay_tolerance = 16,
-                feedback_interval = 20,
+                delay_tolerance = delay_tolerance,
+                feedback_interval = feedback_interval,
                 channel_erasure_model = 'Gilbert-Elliot',
                 Pbg = erasure_prob,
                 Pgb = 0.2,
@@ -239,11 +238,11 @@ def run_simulations(simulation='all'):
         dfr_rr = []
         for erasure_prob in erasures:
             dfr_rr.append(system(
-                length = 8,
-                number = 10000,
+                length = length,
+                number = number,
                 size = 3,
-                delay_tolerance = 16,
-                feedback_interval = 20,
+                delay_tolerance = delay_tolerance,
+                feedback_interval = feedback_interval,
                 channel_erasure_model = 'Gilbert-Elliot',
                 Pbg = erasure_prob,
                 Pgb = 0.2,
@@ -252,7 +251,7 @@ def run_simulations(simulation='all'):
             ))
 
         plt.figure()
-        plt.title("Size = 3, Feedback Erasure = 0.7", fontsize=12)
+        plt.title("Simulation 4: DFR vs Pbg (Gilbert-Elliot) (Size = 3, Feedback Erasure = 0.7)", fontsize=12)
         plt.plot(packet_success, dfr_icc, label='Windowed Coding')
         plt.plot(packet_success, dfr_rr, label='Repetition Redundancy')
         plt.xlabel('Probability bad to good')
@@ -284,11 +283,11 @@ def run_simulations(simulation='all'):
         dfr_icc = []
         for delay in delays_list:
             dfr_icc.append(system(
-                length = 8,
-                number = 10000,
+                length = length,
+                number = number,
                 size = 3,
                 delay_tolerance = delay,
-                feedback_interval = 20,
+                feedback_interval = feedback_interval,
                 channel_erasure_model = 'Gilbert-Elliot',
                 Pbg = 0.6,
                 Pgb = 0.3,
@@ -299,11 +298,11 @@ def run_simulations(simulation='all'):
         dfr_rr = []
         for delay in delays_list:
             dfr_rr.append(system(
-                length = 8,
-                number = 10000,
+                length = length,
+                number = number,
                 size = 3,
                 delay_tolerance = delay,
-                feedback_interval = 20,
+                feedback_interval = feedback_interval,
                 channel_erasure_model = 'Gilbert-Elliot',
                 Pbg = 0.6,
                 Pgb = 0.3,
@@ -312,7 +311,7 @@ def run_simulations(simulation='all'):
             ))
 
         plt.figure()
-        plt.title("Size = 3, Feedback Erasure = 0.5", fontsize=12)
+        plt.title("Simulation 5: DFR vs Delay Tolerance (Size = 3, Feedback Erasure = 0.5)", fontsize=12)
         plt.plot(delays_list, dfr_icc, label='Windowed Coding')
         plt.plot(delays_list, dfr_rr, label='Repetition Redundancy')
         plt.xlabel('Delay Tolerance')
