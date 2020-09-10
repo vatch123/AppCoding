@@ -219,7 +219,6 @@ def run_simulations(simulation='all'):
         print("Simulation 4: DFR vs Pbg (Gilbert-Elliot) (Size = 3, Feedback Erasure = 0.7)")
         print("###################################################")
         erasures = [i/50 for i in range(51)]
-        packet_success = [1 - i/50 for i in range(51)]
         dfr_icc = []
         for erasure_prob in erasures:
             dfr_icc.append(system(
@@ -252,8 +251,8 @@ def run_simulations(simulation='all'):
 
         plt.figure()
         plt.title("Simulation 4: DFR vs Pbg (Gilbert-Elliot) (Size = 3, Feedback Erasure = 0.7)", fontsize=12)
-        plt.plot(packet_success, dfr_icc, label='Windowed Coding')
-        plt.plot(packet_success, dfr_rr, label='Repetition Redundancy')
+        plt.plot(erasures, dfr_icc, label='Windowed Coding')
+        plt.plot(erasures, dfr_rr, label='Repetition Redundancy')
         plt.xlabel('Probability bad to good')
         plt.ylabel('Delivery Failure Rate')
         plt.yscale('log')
@@ -328,10 +327,8 @@ def run_simulations(simulation='all'):
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--number", help="Run the particular simulation")
+    parser.add_argument("--number", help="Run the particular simulation", default='all')
     args = parser.parse_args()
-    if not args.number:
-        args.number = 'all'
     sys.stdout = open('./logs/simulation_'+ args.number +'_results.txt', 'w')
     run_simulations(args.number)
     plt.show()

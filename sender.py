@@ -55,7 +55,7 @@ class Sender():
 
                 # TODO: Check for reversal here
                 interest_list = self.messages_list[packet_number - z:packet_number]
-                if z < size-1:
+                if z <= size-1:
                     for i, pack in enumerate(interest_list):
                         packet.append(pack)
                         packet_header.append(i + packet_number - z)
@@ -95,7 +95,11 @@ class Sender():
         coded_message = int('000000000', 2)
         coding_list = []
         for _ in range(coding_degree):
+            # Dont repeat
             idx = random.randint(0,len(interest_list)-1)
+            while(idx in coding_list):
+                idx = random.randint(0,len(interest_list)-1)
+            
             coded_message = coded_message ^ list2int(interest_list[idx])
             coding_list.append(base_index + idx)
         
