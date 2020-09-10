@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from system import system
 import sys
 import argparse
+import os
 
 num = 5 # Number of simulations currently in the system
 
@@ -67,7 +68,7 @@ def run_simulations(simulation='all'):
                 scheme='repetition'
             ))
 
-        plt.figure()
+        plt.figure(figsize=(10,10))
         plt.title("Simulation 1: DFR vs Packet Delivery Probability (Bernouli) (Size = 2, Feedback Erasure = 0.75)", fontsize=12)
         plt.plot(packet_success, dfr_icc, label='Windowed Coding')
         plt.plot(packet_success, dfr_rr, label='Repetition Redundancy')
@@ -77,6 +78,7 @@ def run_simulations(simulation='all'):
         plt.grid()
         plt.tight_layout()
         plt.legend(loc='upper right')
+        plt.savefig('./plots/Simulation 1.png')
 
         print("###################################################")
 
@@ -126,7 +128,7 @@ def run_simulations(simulation='all'):
                 scheme='repetition'
             ))
 
-        plt.figure()
+        plt.figure(figsize=(10,10))
         plt.title("Simulation 2: DFR vs Packet Delivery Probability (Bernouli) (Size = 3, Feedback Erasure = 0.25)", fontsize=12)
         plt.plot(packet_success, dfr_icc, label='Windowed Coding')
         plt.plot(packet_success, dfr_rr, label='Repetition Redundancy')
@@ -136,6 +138,7 @@ def run_simulations(simulation='all'):
         plt.grid()
         plt.tight_layout()
         plt.legend(loc='upper right')
+        plt.savefig('./plots/Simulation 2.png')
 
         print("###################################################")
 
@@ -191,7 +194,7 @@ def run_simulations(simulation='all'):
                 scheme='repetition'
             ))
 
-        plt.figure()
+        plt.figure(figsize=(10,10))
         plt.title("Simulation 3: DFR vs Feedback Reception Probability (Bernouli) (Size = 4, Erasure = 0.4)", fontsize=12)
         plt.plot(feedback_success, dfr_icc, label='Windowed Coding')
         plt.plot(feedback_success, dfr_rr, label='Repetition Redundancy')
@@ -201,6 +204,7 @@ def run_simulations(simulation='all'):
         plt.grid()
         plt.tight_layout()
         plt.legend(loc='upper right')
+        plt.savefig('./plots/Simulation 3.png')
 
         print("###################################################")
     
@@ -249,7 +253,7 @@ def run_simulations(simulation='all'):
                 scheme='repetition'
             ))
 
-        plt.figure()
+        plt.figure(figsize=(10,10))
         plt.title("Simulation 4: DFR vs Pbg (Gilbert-Elliot) (Size = 3, Feedback Erasure = 0.7)", fontsize=12)
         plt.plot(erasures, dfr_icc, label='Windowed Coding')
         plt.plot(erasures, dfr_rr, label='Repetition Redundancy')
@@ -259,6 +263,7 @@ def run_simulations(simulation='all'):
         plt.grid()
         plt.tight_layout()
         plt.legend(loc='upper right')
+        plt.savefig('./plots/Simulation 4.png')
 
         print("###################################################")
     
@@ -309,7 +314,7 @@ def run_simulations(simulation='all'):
                 scheme='repetition'
             ))
 
-        plt.figure()
+        plt.figure(figsize=(10,10))
         plt.title("Simulation 5: DFR vs Delay Tolerance (Size = 3, Feedback Erasure = 0.5)", fontsize=12)
         plt.plot(delays_list, dfr_icc, label='Windowed Coding')
         plt.plot(delays_list, dfr_rr, label='Repetition Redundancy')
@@ -319,6 +324,7 @@ def run_simulations(simulation='all'):
         plt.grid()
         plt.tight_layout()
         plt.legend(loc='upper right')
+        plt.savefig('./plots/Simulation 5.png')
 
         print("###################################################")
     
@@ -327,8 +333,12 @@ def run_simulations(simulation='all'):
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--number", help="Run the particular simulation", default='all')
+    parser.add_argument("-n", "--number", help="Run the particular simulation", default='all')
     args = parser.parse_args()
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
+    if not os.path.exists('plots'):
+        os.makedirs('plots')
     sys.stdout = open('./logs/simulation_'+ args.number +'_results.txt', 'w')
     run_simulations(args.number)
     plt.show()
