@@ -160,10 +160,6 @@ def run_simulations(simulation='all'):
         print("Simulation 3: DFR vs Feedback Reception Probability (Bernouli) (Size = 4, Erasure = 0.4)")
         print("###################################################")
 
-        # TODO: the probability of feedback in paper and for our case is different
-        # as our feedback itself is intermittent. So for some packets the probability of 
-        # feedback is 0, but for the paper it some fixed number. Our feedback erasure probability
-        # is the probability with which feedback is lost if sent.
         feedback_erasure = [i/50 for i in range(51)]
         feedback_success = [1 - i/50 for i in range(51)]
         dfr_icc = []

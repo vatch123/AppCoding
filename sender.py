@@ -88,8 +88,8 @@ class Sender():
 
         else:
             probs = [(num_missing - 1) * comb(packet_number - oldest_undelivered - num_missing, d - 1) /
-                        comb(packet_number - oldest_undelivered - 1, d) for d in range(1, packet_number - oldest_undelivered)]
-            coding_degree = probs.index(max(probs))
+                        comb(packet_number - oldest_undelivered - 1, d) for d in range(1, packet_number - oldest_undelivered - num_missing + 2)]
+            coding_degree = probs.index(max(probs)) + 1
             base_index = oldest_undelivered + 1
 
         coded_message = int('000000000', 2)

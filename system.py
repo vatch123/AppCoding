@@ -60,14 +60,15 @@ def system(
         if not lost:
             gateway.receive_packet(p_i_h, p_i, size)
         
-        if i % feedback_interval==0:
-            # TODO: If none of the last packets are missing what to do
-            feedback = gateway.send_feedback(i, delay_tolerance)
-            
-            if feedback:
-                lost = bernouli_erasure(erasure_prob_feedback)
-                if not lost:
-                    transmitter.store_feedback(i, feedback)
+            # The feedback is sent for each received packet
+            if i % feedback_interval==0:
+                # TODO: If none of the last packets are missing what to do
+                feedback = gateway.send_feedback(i, delay_tolerance)
+
+                if feedback:
+                    lost = bernouli_erasure(erasure_prob_feedback)
+                    if not lost:
+                        transmitter.store_feedback(i, feedback)
         
 
     # Analysis

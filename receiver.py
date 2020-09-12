@@ -12,8 +12,8 @@ class Receiver():
         self.received_packet_list = [False] * num_messages
     
 
-    def update_packet_reception(self, packet_number, status):
-        self.received_packet_list[packet_number] = status
+    def update_packet_reception(self, packet_number, lost):
+        self.received_packet_list[packet_number] = not lost
 
     
     def receive_packet(self, packet_header, packet, size):
@@ -52,11 +52,11 @@ class Receiver():
 
     def send_feedback(self, packet_number, delay_tolerance):
         # Interval of interest starting position
-        lower = max(0, packet_number - delay_tolerance + 1)
+        lower = max(0, packet_number - delay_tolerance)
         
         try:
-            index = packet_number - self.received_messages_list.index(False, lower, packet_number + 1)
-            num_unreceived = (delay_tolerance - 1) - sum(self.received_messages_list[lower:packet_number]) 
+            index = packet_number - self.received_messages_list.index(False, lower, packet_number)
+            num_unreceived = (packet_number - lower) - sum(self.received_messages_list[lower:packet_number]) 
         except ValueError as _:
             index = None
         
