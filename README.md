@@ -2,7 +2,7 @@
 
 The current state of the repository emulates the work of ICC paper.
 
-The entire code is written in python with `numpy` and `matplotlib` as the only dependencies.
+The entire code is written in python with `matplotlib` as the only dependency.
 
 There are two runnable scripts:
 * system.py
