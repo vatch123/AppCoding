@@ -68,9 +68,15 @@ class Sender():
                         packet_header.append(coding_list)
         
         elif scheme=='repetition':
-            packet = []
-            packet_header = []
-            for i in range(size):
+            packet = [self.messages_list[packet_number]]
+            packet_header = [packet_number]
+            size -= 1
+            if self.feedback_packet is packet_number - 1:
+                oldest_undelivered = self.feedback_packet - int(self.feedback[1:9], 2)
+                packet.append(self.messages_list[oldest_undelivered])
+                packet_header.append(oldest_undelivered)
+                size -= 1
+            for i in range(1, size+1):
                 if(packet_number-i)>=0:
                     packet.append(self.messages_list[packet_number - i])
                     self.sent_list[packet_number - i] = True
