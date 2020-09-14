@@ -17,6 +17,7 @@ def run_simulations(simulation='all'):
     number = 10000
     delay_tolerance = 16
     feedback_interval = 1
+    baseline = 'repetition'
 
     if simulation == 'all':
         for i in range(1, num+1):
@@ -65,7 +66,7 @@ def run_simulations(simulation='all'):
                 channel_erasure_model = 'Bernouli',
                 Pbg = erasure_prob,
                 erasure_prob_feedback = 0.75,
-                scheme='repetition'
+                scheme=baseline
             ))
 
         plt.figure(figsize=(10,10))
@@ -125,7 +126,7 @@ def run_simulations(simulation='all'):
                 channel_erasure_model = 'Bernouli',
                 Pbg = erasure_prob,
                 erasure_prob_feedback = 0.25,
-                scheme='repetition'
+                scheme=baseline
             ))
 
         plt.figure(figsize=(10,10))
@@ -187,7 +188,7 @@ def run_simulations(simulation='all'):
                 channel_erasure_model = 'Bernouli',
                 Pbg = 0.4,
                 erasure_prob_feedback = erasure_prob,
-                scheme='repetition'
+                scheme=baseline
             ))
 
         plt.figure(figsize=(10,10))
@@ -246,7 +247,7 @@ def run_simulations(simulation='all'):
                 Pbg = erasure_prob,
                 Pgb = 0.2,
                 erasure_prob_feedback = 0.7,
-                scheme='repetition'
+                scheme=baseline
             ))
 
         plt.figure(figsize=(10,10))
@@ -307,7 +308,7 @@ def run_simulations(simulation='all'):
                 Pbg = 0.6,
                 Pgb = 0.3,
                 erasure_prob_feedback = 0.5,
-                scheme='repetition'
+                scheme=baseline
             ))
 
         plt.figure(figsize=(10,10))
@@ -317,6 +318,7 @@ def run_simulations(simulation='all'):
         plt.xlabel('Delay Tolerance')
         plt.ylabel('Delivery Failure Rate')
         plt.yscale('log')
+        plt.ylim(0.00001, 1)
         plt.grid()
         plt.tight_layout()
         plt.legend(loc='upper right')
