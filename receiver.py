@@ -12,8 +12,8 @@ class Receiver():
         self.received_packet_list = [False] * num_messages
     
 
-    def update_packet_reception(self, packet_number, lost):
-        self.received_packet_list[packet_number] = not lost
+    def update_packet_reception(self, packet_number, received):
+        self.received_packet_list[packet_number] = received
 
     
     def receive_packet(self, packet_header, packet, size):
@@ -58,12 +58,9 @@ class Receiver():
             index = packet_number - self.received_messages_list.index(False, lower, packet_number)
             num_unreceived = (packet_number - lower) - sum(self.received_messages_list[lower:packet_number]) 
         except ValueError as _:
-            index = None
-        
-        if index:
-            feedback = str(int(self.received_messages_list[packet_number])) + get_bin(index, 8) + get_bin(num_unreceived, 8)
-            return feedback
-        else:
-            return False
+            index = 0
+            num_unreceived = 0
 
+        feedback = str(int(self.received_messages_list[packet_number])) + get_bin(index, 8) + get_bin(num_unreceived, 8)
+        return feedback
 

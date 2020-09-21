@@ -14,10 +14,11 @@ num = 5 # Number of simulations currently in the system
 def run_simulations(simulation='all'):
 
     length = 8
-    number = 10000
+    number = 50000
     delay_tolerance = 16
     feedback_interval = 1
     baseline = 'repetition'
+    degree_not_feedback = 2
 
     if simulation == 'all':
         for i in range(1, num+1):
@@ -28,7 +29,7 @@ def run_simulations(simulation='all'):
         Simulation 1:
             Constants:
                 size = 2
-                erasure_prob_feedback = 0.75    TODO: Check with the simulation in paper. This
+                prob_feedback = 0.25    TODO: Check with the simulation in paper. This
                                                     should be different I guess
                 other parameters = default
             
@@ -39,10 +40,9 @@ def run_simulations(simulation='all'):
         print("###################################################")
         print("Simulation 1: DFR vs Packet Delivery Probability (Bernouli) (Size = 2, Feedback Erasure = 0.75)")
         print("###################################################")
-        erasures = [i/50 for i in range(51)]
-        packet_success = [1 - i/50 for i in range(51)]
+        packet_success = [i/50 for i in range(51)]
         dfr_icc = []
-        for erasure_prob in erasures:
+        for success in packet_success:
             dfr_icc.append(system(
                 length = length,
                 number = number,
@@ -50,13 +50,14 @@ def run_simulations(simulation='all'):
                 delay_tolerance = delay_tolerance,
                 feedback_interval = feedback_interval,
                 channel_erasure_model = 'Bernouli',
-                Pbg = erasure_prob,
-                erasure_prob_feedback = 0.75,
-                scheme='ICC'
+                Pbg = success,
+                prob_feedback = 0.25,
+                scheme='ICC',
+                degree_not_feedback = degree_not_feedback
             ))
         
         dfr_rr = []
-        for erasure_prob in erasures:
+        for success in packet_success:
             dfr_rr.append(system(
                 length = length,
                 number = number,
@@ -64,13 +65,14 @@ def run_simulations(simulation='all'):
                 delay_tolerance = delay_tolerance,
                 feedback_interval = feedback_interval,
                 channel_erasure_model = 'Bernouli',
-                Pbg = erasure_prob,
-                erasure_prob_feedback = 0.75,
-                scheme=baseline
+                Pbg = success,
+                prob_feedback = 0.25,
+                scheme=baseline,
+                degree_not_feedback = degree_not_feedback
             ))
 
         plt.figure(figsize=(10,10))
-        plt.title("Simulation 1: DFR vs Packet Delivery Probability (Bernouli) (Size = 2, Feedback Erasure = 0.75)", fontsize=12)
+        plt.title("Simulation 1: DFR vs Packet Delivery Probability (Bernouli) (Size = 2, Feedback Probability = 0.25)", fontsize=12)
         plt.plot(packet_success, dfr_icc, label='Windowed Coding')
         plt.plot(packet_success, dfr_rr, label='Repetition Redundancy')
         plt.xlabel('Packet Delivery Probability')
@@ -88,7 +90,7 @@ def run_simulations(simulation='all'):
         Simulation 2:
             Constants:
                 size = 3
-                erasure_prob_feedback = 0.25    TODO: Check with the simulation in paper. This
+                prob_feedback = 0.75    TODO: Check with the simulation in paper. This
                                                     should be different I guess
                 other parameters = default
             
@@ -99,10 +101,9 @@ def run_simulations(simulation='all'):
         print("###################################################")
         print("Simulation 2: DFR vs Packet Delivery Probability (Bernouli) (Size = 3, Feedback Erasure = 0.25)")
         print("###################################################")
-        erasures = [i/50 for i in range(51)]
-        packet_success = [1 - i/50 for i in range(51)]
+        packet_success = [i/50 for i in range(51)]
         dfr_icc = []
-        for erasure_prob in erasures:
+        for success in packet_success:
             dfr_icc.append(system(
                 length = length,
                 number = number,
@@ -110,13 +111,14 @@ def run_simulations(simulation='all'):
                 delay_tolerance = delay_tolerance,
                 feedback_interval = feedback_interval,
                 channel_erasure_model = 'Bernouli',
-                Pbg = erasure_prob,
-                erasure_prob_feedback = 0.25,
-                scheme='ICC'
+                Pbg = success,
+                prob_feedback = 0.75,
+                scheme='ICC',
+                degree_not_feedback = degree_not_feedback
             ))
 
         dfr_rr = []
-        for erasure_prob in erasures:
+        for success in packet_success:
             dfr_rr.append(system(
                 length = length,
                 number = number,
@@ -124,13 +126,14 @@ def run_simulations(simulation='all'):
                 delay_tolerance = delay_tolerance,
                 feedback_interval = feedback_interval,
                 channel_erasure_model = 'Bernouli',
-                Pbg = erasure_prob,
-                erasure_prob_feedback = 0.25,
-                scheme=baseline
+                Pbg = success,
+                prob_feedback = 0.75,
+                scheme=baseline,
+                degree_not_feedback = degree_not_feedback
             ))
 
         plt.figure(figsize=(10,10))
-        plt.title("Simulation 2: DFR vs Packet Delivery Probability (Bernouli) (Size = 3, Feedback Erasure = 0.25)", fontsize=12)
+        plt.title("Simulation 2: DFR vs Packet Delivery Probability (Bernouli) (Size = 3, Feedback Probability = 0.75)", fontsize=12)
         plt.plot(packet_success, dfr_icc, label='Windowed Coding')
         plt.plot(packet_success, dfr_rr, label='Repetition Redundancy')
         plt.xlabel('Packet Delivery Probability')
@@ -149,7 +152,7 @@ def run_simulations(simulation='all'):
         Simulation 3:
             Constants:
                 size = 3
-                erasure_prob = 0.4    TODO: Check with the simulation in paper. This
+                packet_success_prob = 0.4    TODO: Check with the simulation in paper. This
                                                     should be different I guess
                 other parameters = default
             
@@ -161,10 +164,9 @@ def run_simulations(simulation='all'):
         print("Simulation 3: DFR vs Feedback Reception Probability (Bernouli) (Size = 4, Erasure = 0.4)")
         print("###################################################")
 
-        feedback_erasure = [i/50 for i in range(51)]
-        feedback_success = [1 - i/50 for i in range(51)]
+        feedback_prob = [i/50 for i in range(51)]
         dfr_icc = []
-        for erasure_prob in feedback_erasure:
+        for prob in feedback_prob:
             dfr_icc.append(system(
                 length = length,
                 number = number,
@@ -173,12 +175,13 @@ def run_simulations(simulation='all'):
                 feedback_interval = feedback_interval,
                 channel_erasure_model = 'Bernouli',
                 Pbg = 0.4,
-                erasure_prob_feedback = erasure_prob,
-                scheme='ICC'
+                prob_feedback = prob,
+                scheme='ICC',
+                degree_not_feedback = degree_not_feedback
             ))
 
         dfr_rr = []
-        for erasure_prob in feedback_erasure:
+        for prob in feedback_prob:
             dfr_rr.append(system(
                 length = length,
                 number = number,
@@ -187,14 +190,15 @@ def run_simulations(simulation='all'):
                 feedback_interval = feedback_interval,
                 channel_erasure_model = 'Bernouli',
                 Pbg = 0.4,
-                erasure_prob_feedback = erasure_prob,
-                scheme=baseline
+                prob_feedback = prob,
+                scheme=baseline,
+                degree_not_feedback = degree_not_feedback
             ))
 
         plt.figure(figsize=(10,10))
-        plt.title("Simulation 3: DFR vs Feedback Reception Probability (Bernouli) (Size = 4, Erasure = 0.4)", fontsize=12)
-        plt.plot(feedback_success, dfr_icc, label='Windowed Coding')
-        plt.plot(feedback_success, dfr_rr, label='Repetition Redundancy')
+        plt.title("Simulation 3: DFR vs Feedback Reception Probability (Bernouli) (Size = 4, Packet Reception = 0.4)", fontsize=12)
+        plt.plot(feedback_prob, dfr_icc, label='Windowed Coding')
+        plt.plot(feedback_prob, dfr_rr, label='Repetition Redundancy')
         plt.xlabel('Feedback Reception Probability')
         plt.ylabel('Delivery Failure Rate')
         plt.yscale('log')
@@ -231,8 +235,9 @@ def run_simulations(simulation='all'):
                 channel_erasure_model = 'Gilbert-Elliot',
                 Pbg = erasure_prob,
                 Pgb = 0.2,
-                erasure_prob_feedback = 0.7,
-                scheme='ICC'
+                prob_feedback = 0.3,
+                scheme='ICC',
+                degree_not_feedback = degree_not_feedback
             ))
 
         dfr_rr = []
@@ -246,12 +251,13 @@ def run_simulations(simulation='all'):
                 channel_erasure_model = 'Gilbert-Elliot',
                 Pbg = erasure_prob,
                 Pgb = 0.2,
-                erasure_prob_feedback = 0.7,
-                scheme=baseline
+                prob_feedback = 0.3,
+                scheme=baseline,
+                degree_not_feedback = degree_not_feedback
             ))
 
         plt.figure(figsize=(10,10))
-        plt.title("Simulation 4: DFR vs Pbg (Gilbert-Elliot) (Size = 3, Feedback Erasure = 0.7)", fontsize=12)
+        plt.title("Simulation 4: DFR vs Pbg (Gilbert-Elliot) (Size = 3, Probability Feedback = 0.3)", fontsize=12)
         plt.plot(erasures, dfr_icc, label='Windowed Coding')
         plt.plot(erasures, dfr_rr, label='Repetition Redundancy')
         plt.xlabel('Probability bad to good')
@@ -270,7 +276,7 @@ def run_simulations(simulation='all'):
             Constants:
                 Pgb = 0.3
                 Pbg = 0.6
-                feedback_erasure = 0.5
+                prob_feedback = 0.5
                 other parameters = default
             
             Sweep Over:
@@ -292,8 +298,9 @@ def run_simulations(simulation='all'):
                 channel_erasure_model = 'Gilbert-Elliot',
                 Pbg = 0.6,
                 Pgb = 0.3,
-                erasure_prob_feedback = 0.5,
-                scheme='ICC'
+                prob_feedback = 0.5,
+                scheme='ICC',
+                degree_not_feedback = degree_not_feedback
             ))
 
         dfr_rr = []
@@ -307,12 +314,13 @@ def run_simulations(simulation='all'):
                 channel_erasure_model = 'Gilbert-Elliot',
                 Pbg = 0.6,
                 Pgb = 0.3,
-                erasure_prob_feedback = 0.5,
-                scheme=baseline
+                prob_feedback = 0.5,
+                scheme=baseline,
+                degree_not_feedback = degree_not_feedback
             ))
 
         plt.figure(figsize=(10,10))
-        plt.title("Simulation 5: DFR vs Delay Tolerance (Size = 3, Feedback Erasure = 0.5)", fontsize=12)
+        plt.title("Simulation 5: DFR vs Delay Tolerance (Size = 3, Probability Feedback = 0.5)", fontsize=12)
         plt.plot(delays_list, dfr_icc, label='Windowed Coding')
         plt.plot(delays_list, dfr_rr, label='Repetition Redundancy')
         plt.xlabel('Delay Tolerance')

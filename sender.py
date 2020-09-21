@@ -8,12 +8,13 @@ from utils import int2list, list2int
 
 class Sender():
 
-    def __init__(self, messages, delay_tolerance):
+    def __init__(self, messages, delay_tolerance, degree_not_feedback):
         self.feedback = None
         self.feedback_packet = None
         self.messages_list = messages
         self.sent_list = [False] * len(messages)
         self.delay_tolerance = delay_tolerance
+        self.degree_not_feedback = degree_not_feedback
     
     def send_packet(self, packet_number, size, scheme='ICC'):
         """
@@ -26,6 +27,8 @@ class Sender():
             if self.feedback_packet is packet_number - 1:
                 oldest_undelivered = self.feedback_packet - int(self.feedback[1:9], 2)
                 num_missing = int(self.feedback[9:], 2)
+                if num_missing == 0:
+                    oldest_undelivered = self.feedback_packet + 1
                 if oldest_undelivered < packet_number:
                     packet.append(self.messages_list[oldest_undelivered])
                     packet_header.append(oldest_undelivered)
@@ -49,6 +52,9 @@ class Sender():
                 # TODO: Decide what to do first when no feedback is present
                 if self.feedback:
                     oldest_undelivered = self.feedback_packet - int(self.feedback[1:9], 2)
+                    num_missing = int(self.feedback[9:], 2)
+                    if num_missing == 0:
+                        oldest_undelivered = self.feedback_packet + 1
                 else:
                     oldest_undelivered = 0
                 z = min(packet_number - oldest_undelivered, self.delay_tolerance)
@@ -73,9 +79,16 @@ class Sender():
             size -= 1
             if self.feedback_packet is packet_number - 1:
                 oldest_undelivered = self.feedback_packet - int(self.feedback[1:9], 2)
-                packet.append(self.messages_list[oldest_undelivered])
-                packet_header.append(oldest_undelivered)
-                size -= 1
+                num_missing = int(self.feedback[9:], 2)
+                if num_missing == 0:
+                    oldest_undelivered = self.feedback_packet + 1
+                
+                if oldest_undelivered == packet_number:
+                    pass
+                else:
+                    packet.append(self.messages_list[oldest_undelivered])
+                    packet_header.append(oldest_undelivered)
+                    size -= 1
             for i in range(1, size+1):
                 if(packet_number-i)>=0:
                     packet.append(self.messages_list[packet_number - i])
@@ -89,7 +102,7 @@ class Sender():
 
         if distribution == 'uniform':
             z = min(packet_number - oldest_undelivered, self.delay_tolerance)
-            coding_degree = random.randint(1,z)
+            coding_degree = min(self.degree_not_feedback, z)
             base_index = packet_number - z
 
         else:
@@ -117,5 +130,3 @@ class Sender():
     def store_feedback(self, packet_number, feedback):
         self.feedback = feedback
         self.feedback_packet = packet_number
-    
-

@@ -11,15 +11,16 @@ import argparse
 
 def system(
     length = 8,
-    number = 10000,
-    size = 4,
+    number = 50000,
+    size = 3,
     delay_tolerance = 16,
     feedback_interval = 1,
-    channel_erasure_model = 'Gilbert-Elliot',
-    Pbg = 0.5,
+    channel_erasure_model = 'Bernouli',
+    Pbg = 0.6,
     Pgb = 0.4,
-    erasure_prob_feedback = 0.4,
-    scheme = 'ICC'
+    prob_feedback = 0.0,
+    scheme = 'repetition',
+    degree_not_feedback = 2
 ):
     """
     length: 8 bit message
@@ -37,7 +38,7 @@ def system(
     messages = [[random.randint(0,1) for _ in range(length)]] * number
 
     # Create a sender
-    transmitter = sender.Sender(messages, delay_tolerance)
+    transmitter = sender.Sender(messages, delay_tolerance, degree_not_feedback)
 
     # Creating a receiver
     gateway = receiver.Receiver(number)
@@ -49,26 +50,24 @@ def system(
         
         # Channel erasure
         if channel_erasure_model == 'Bernouli':
-            lost = bernouli_erasure(Pbg)
+            received = bernouli_erasure(Pbg)
         elif channel_erasure_model == 'Gilbert-Elliot':
             previous_status = gateway.received_packet_list[i-1] if i>=0 else True
-            lost = gilbert_elliot_erasure(previous_status, Pbg, Pgb)
+            received = gilbert_elliot_erasure(previous_status, Pbg, Pgb)
 
         # Receiver's side
-        gateway.update_packet_reception(i, lost)
+        gateway.update_packet_reception(i, received)
 
-        if not lost:
+        if received:
             gateway.receive_packet(p_i_h, p_i, size)
         
             # The feedback is sent for each received packet
             if i % feedback_interval==0:
-                # TODO: If none of the last packets are missing what to do
                 feedback = gateway.send_feedback(i, delay_tolerance)
 
-                if feedback:
-                    lost = bernouli_erasure(erasure_prob_feedback)
-                    if not lost:
-                        transmitter.store_feedback(i, feedback)
+                received = bernouli_erasure(prob_feedback)
+                if received:
+                    transmitter.store_feedback(i, feedback)
         
 
     # Analysis
@@ -83,8 +82,9 @@ def system(
         print("Probability bad to good: ", Pbg)
         print('Probability good to bad: ', Pgb)
     elif channel_erasure_model=='Bernouli':
-        print('Erasure Probability: ', Pbg)
+        print('Reception Probability: ', Pbg)
     print("Number of messages: ", number)
+    print("Feedback Reception Probability: ", prob_feedback)
     print("Delay Tolerance: ", delay_tolerance)
     print("Reception Rate: ", reception_rate)
     print("Number of unreceived packets: ", unreceived)
@@ -104,8 +104,9 @@ if __name__=="__main__":
     parser.add_argument('-d', '--delay_tolerance', help='Delay Tolerance', type=int, default=16)
     parser.add_argument('-pbg', '--pbg', help='Channel Erasure Probability for Bernouli or Probability of good to bad transition in Gilbert Elliot', type=float, default=0.5)
     parser.add_argument('-pgb', '--pgb', help='Probability of bad to good transition in Gilbert Elliot', type=float, default=0.4)
-    parser.add_argument('-f', '--feedback_erasure', help='Feedback erasure probability', type=float, default=0.4)
+    parser.add_argument('-f', '--feedback', help='Feedback probability', type=float, default=0.4)
     parser.add_argument('-i', '--feedback_interval', help='The interval of sending feedback', type=int, default=1)
+    parser.add_argument('--dnf', '--degree_nf', help='The coding degree when feedback is not present', type=int, default=2)
     parser.add_argument('--scheme', help='The coding scheme to use', choices=['ICC', 'repetition'], type=str, default='ICC')
     args = parser.parse_args()
 
@@ -118,7 +119,8 @@ if __name__=="__main__":
         channel_erasure_model = args.channel,
         Pbg = args.pbg,
         Pgb = args.pgb,
-        erasure_prob_feedback = args.feedback_erasure,
-        scheme = args.scheme
+        prob_feedback = args.feedback,
+        scheme = args.scheme,
+        degree_not_feedback = args.dnf
     )
 
