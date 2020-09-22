@@ -1,11 +1,11 @@
-import random
+import numpy as np
 
 def bernouli_erasure(success_prob):
     """
     Probability that the message will be sucessfully
     """
     
-    x = random.uniform(0,1)
+    x = np.random.uniform(0,1)
     return True if x < success_prob else False
 
 
@@ -18,10 +18,10 @@ def gilbert_elliot_erasure(previous_status, Pbg, Pgb):
 
     # Check if packet_number-1 was lost
     if not previous_status:
-        x = random.uniform(0,1)
+        x = np.random.uniform(0,1)
         return True if x < Pbg else False
     
     else:
-        x = random.uniform(0,1)
+        x = np.random.uniform(0,1)
         return True if x < 1 - Pgb else False
 
