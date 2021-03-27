@@ -56,10 +56,10 @@ def system(
             received = gilbert_elliot_erasure(previous_status, Pbg, Pgb)
 
         # Receiver's side
-        gateway.update_packet_reception(i, received)
-
+        
         if received:
             gateway.receive_packet(p_i_h, p_i, size)
+            gateway.update_packet_reception(i, received)
         
         # The feedback is sent for each received packet
         if i % feedback_interval==0:
@@ -73,7 +73,7 @@ def system(
     # Analysis
     reception_rate = sum(gateway.received_messages_list[:number - delay_tolerance]) /  (number - delay_tolerance)
     unreceived = (number - delay_tolerance) - sum(gateway.received_messages_list[:number - delay_tolerance])
-    dfr = 1 - reception_rate
+    dfr = ((number - delay_tolerance) - sum(gateway.received_messages_list[:number - delay_tolerance])) / (number - delay_tolerance)
 
     print("********")
 
