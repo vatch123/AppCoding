@@ -1,3 +1,7 @@
+"""
+This module contains various utility functions
+"""
+
 
 def get_bin(x, n=0):
     """

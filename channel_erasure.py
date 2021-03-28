@@ -1,8 +1,24 @@
+"""
+This module contains various channel erasure models
+"""
+
+
 import numpy as np
 
 def bernouli_erasure(success_prob):
     """
-    Probability that the message will be sucessfully
+    It simulates a bernouli erasure channel
+
+    Parameters
+    ----------
+    success_prob : `float`
+        Probability that the message will be sucessfully delivered
+    
+    Returns
+    -------
+    `bool`
+        Whether the current packet will be delivered or not
+
     """
     
     x = np.random.uniform(0,1)
@@ -11,9 +27,21 @@ def bernouli_erasure(success_prob):
 
 def gilbert_elliot_erasure(previous_status, Pbg, Pgb):
     """
-    Previous state
-    Pbg: Probability of transition from bad to good.
-    Pgb: Probability of transition from good to bad
+    Simulates a Gilbert-Elliot channel as a two state markov chain
+
+    Parameters
+    ----------
+    previous_state : `bool`
+        Whether the previous message was delivered or not
+    Pbg : `float`
+        Probability of state transition from bad to good
+    Pgb : `float`
+        Probability of state transition from good to bad
+
+    Returns
+    -------
+    `bool`
+        Whether the current packet will be delivered or not
     """
 
     # Check if packet_number-1 was lost

@@ -1,6 +1,5 @@
 """
-BTP Project - App Coding
-Simulation Code
+This module runs the set of simulations as mentioned in the paper
 """
 
 import matplotlib.pyplot as plt
@@ -12,6 +11,15 @@ import os
 num = 5 # Number of simulations currently in the system
 
 def run_simulations(simulation='all'):
+
+    """
+    Run all simulations in order
+
+    Parameters
+    ----------
+    simulation : `int`
+        Defines which simulation to run
+    """
 
     length = 8
     number = 50000

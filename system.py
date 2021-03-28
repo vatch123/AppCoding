@@ -1,5 +1,5 @@
 """
-BTP project - Application Layer Coding
+This module simulates the entire transmission of messages from the sender to the receiver
 """
 
 # Import necessary modules
@@ -23,15 +23,34 @@ def system(
     degree_not_feedback = 2
 ):
     """
-    length: 8 bit message
-    number: No. of messages
-    size: No. of messages in a packet
-    delay_tolerance: No. of previous packets of interest at the current moment
-    feedback_interval: Feedback sent after every these many packets
-    channel_erasure_model: Type of channel erasure
-    Pbg: Probability of transition from bad to good
-    Pgb: Probability of transition from good to bad
-    erasure_prob_feedback: Feedback erasure probability
+    Simulates transmission of every message
+
+    Parameters
+    ----------
+    length : `int`
+        Number of bits in 1 message
+    number : `int`
+        No. of messages
+    size : `int`
+        No. of messages in a packet
+    delay_tolerance : `int`
+        No. of previous packets of interest at the current moment
+    feedback_interval : `int`
+        Feedback sent after every these many packets
+    channel_erasure_model: `string`
+        Type of channel erasure
+    Pbg : `float`
+        Probability of transition from bad to good (Also works as channel 
+        success probability for a bernouli channel)
+    Pgb : `float`
+        Probability of transition from good to bad
+    erasure_prob_feedback : `float`
+        Feedback erasure probability
+    
+    Returns
+    -------
+    `float`
+        Delivery failure rate
     """
 
     # Placeholder for all packets
