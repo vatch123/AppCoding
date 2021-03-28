@@ -1,6 +1,8 @@
-# Application Layer Coding
+# Application Layer Coding for Delay and Feedback Constraints Scenarios
 
-The current state of the repository emulates the work of ICC paper.
+#### This repository is not being actively maintained but most of the functionality of [[1]](#1) has been implemented. The entire code was ported in MATLAB for further experiments which would be released shortly.
+
+The current state of the repository emulates the work of the paper [[1]](#1).
 
 The entire code is written in python with `matplotlib` as the only dependency.
 
@@ -44,4 +46,7 @@ This will run all the simulations with similar settings as in the paper. It will
 ```
 python simulation.py -n 1
 ```
-This will run the first simulation as mentioned in the ICC paper.
+This will run the first simulation as mentioned in the paper.
+
+## References
+<a id="1">[1]</a> S. S. Borkotoky, U. Schilcher and C. Raffelsberger, *"Application-Layer Coding with Intermittent Feedback Under Delay and Duty-Cycle Constraints,"* ICC 2020 - 2020 IEEE International Conference on Communications (ICC), Dublin, Ireland, 2020, pp. 1-6, doi: 10.1109/ICC40277.2020.9148646.
